@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Ride | Ubar</title>
+    <style>
+        /* --- Reset & Core Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Container --- */
+        .booking-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            text-transform: lowercase;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #545454;
+            font-weight: 400;
+        }
+
+        /* --- Location Inputs Group --- */
+        .location-group {
+            position: relative;
+            background-color: #f6f6f6;
+            border-radius: 12px;
+            padding: 8px 0;
+            margin-bottom: 28px;
+        }
+
+        /* Visual connector line between pickup and dropoff */
+        .location-group::before {
+            content: '';
+            position: absolute;
+            left: 26px;
+            top: 35px;
+            bottom: 35px;
+            width: 2px;
+            background-color: #000000;
+            z-index: 2;
+        }
+
+        .input-row {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 12px 16px 12px 48px;
+        }
+
+        .input-row:first-child {
+            border-bottom: 1px solid #e2e2e2;
+        }
+
+        /* Minimal Indicator Dots */
+        .dot {
+            position: absolute;
+            left: 23px;
+            width: 8px;
+            height: 8px;
+            z-index: 3;
+            background-color: #000000;
+        }
+        .dot.pickup {
+            border-radius: 50%;
+        }
+        .dot.dropoff {
+            transform: rotate(45deg); /* Square dot for destination */
+        }
+
+        .loc-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+            color: #000000;
+            outline: none;
+        }
+
+        .loc-input::placeholder {
+            color: #545454;
+        }
+
+        /* --- Vehicle Selection (Radio Cards) --- */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .vehicle-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .vehicle-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border: 2px solid #f6f6f6;
+            background-color: #f6f6f6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Hidden standard radio button */
+        .vehicle-radio {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Active selection styling */
+        .vehicle-radio:checked + .vehicle-card {
+            border-color: #000000;
+            background-color: #ffffff;
+        }
+
+        .vehicle-details {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Vehicle Image Container */
+        .vehicle-img-wrapper {
+            width: 64px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vehicle-img-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .vehicle-info .name {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .vehicle-info .eta {
+            font-size: 0.85rem;
+            color: #545454;
+        }
+
+        .vehicle-price {
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- Submit Button --- */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .arrow-icon {
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-submit:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="booking-container">
+        <header class="header">
+            <h1 class="logo">ubar</h1>
+            <p class="subtitle">Where to?</p>
+        </header>
+
+        <form id="bookingForm">
+            <!-- Pickup & Dropoff Segment -->
+            <div class="location-group">
+                <div class="input-row">
+                    <span class="dot pickup"></span>
+                    <input type="text" id="pickup" class="loc-input" placeholder="Enter pickup location" required autocomplete="off">
+                </div>
+                <div class="input-row">
+                    <span class="dot dropoff"></span>
+                    <input type="text" id="dropoff" class="loc-input" placeholder="Enter destination" required autocomplete="off">
+                </div>
+            </div>
+
+            <!-- Vehicle Selection System -->
+            <h2 class="section-title">Select Ride</h2>
+            <div class="vehicle-options">
+                
+                <!-- Option 1: Economy -->
+                <label>
+                    <input type="radio" name="vehicle" value="ubarx" class="vehicle-radio" checked>
+                    <div class="vehicle-card">
+                        <div class="details-wrapper vehicle-details">
+                            <div class="vehicle-img-wrapper">
+                                <!-- Replace source with your actual image path -->
+                                <img src="ubarx.png" alt="UbarX">
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="name">UbarX</div>
+                                <div class="eta">3 min away • 16:58</div>
+                            </div>
+                        </div>
+                        <div class="vehicle-price">$14.50</div>
+                    </div>
+                </label>
+
+                <!-- Option 2: Premium XL -->
+                <label>
+                    <input type="radio" name="vehicle" value="ubarxl" class="vehicle-radio">
+                    <div class="vehicle-card">
+                        <div class="details-wrapper vehicle-details">
+                            <div class="vehicle-img-wrapper">
+                                <!-- Replace source with your actual image path -->
+                                <img src="ubarxl.png" alt="UbarXL">
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="name">UbarXL</div>
+                                <div class="eta">5 min away • 17:00</div>
+                            </div>
+                        </div>
+                        <div class="vehicle-price">$22.30</div>
+                    </div>
+                </label>
+
+                <!-- Option 3: Luxury Black -->
+                <label>
+                    <input type="radio" name="vehicle" value="ubarlux" class="vehicle-radio">
+                    <div class="vehicle-card">
+                        <div class="details-wrapper vehicle-details">
+                            <div class="vehicle-img-wrapper">
+                                <!-- Replace source with your actual image path -->
+                                <img src="ubarlux.png" alt="UbarBlack">
+                            </div>
+                            <div class="vehicle-info">
+                                <div class="name">Ubar Black</div>
+                                <div class="eta">2 min away • 16:57</div>
+                            </div>
+                        </div>
+                        <div class="vehicle-price">$35.00</div>
+                    </div>
+                </label>
+
+            </div>
+
+            <!-- Form Action Submit -->
+            <button type="submit" class="btn-submit">
+                Confirm Booking <span class="arrow-icon">→</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('bookingForm');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const pickup = document.getElementById('pickup').value.trim();
+            const dropoff = document.getElementById('dropoff').value.trim();
+            const selectedVehicle = document.querySelector('input[name="vehicle"]:checked').value;
+
+            if (pickup && dropoff) {
+                alert(`Searching for drivers near you...\nPickup: ${pickup}\nDestination: ${dropoff}\nService Type: ${selectedVehicle}`);
+                // Connect your map API or backend dispatch system right here
+            } else {
+                alert('Please fill out both pickup and destination fields.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100% Free Production Ready Rider Engine</title>
+    
+    <!-- Tailwind CSS (V4) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- Leaflet Core and Leaflet Routing Engine Style Assets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+    <style>
+        #map {
+            height: 100%;
+            width: 100%;
+            background-color: #f3f4f6;
+        }
+        /* Completely hides standard Leaflet Routing instructions list text to look modern like Uber */
+        .leaflet-routing-container {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased overflow-hidden h-screen w-screen relative">
+
+    <!-- FLOATING TOP BAR ACTION OVERLAY -->
+    <div id="top-card" class="absolute top-4 left-4 z-[1000] w-full max-w-sm bg-white rounded-2xl shadow-2xl p-5 border border-gray-100 transition-all duration-300">
+        <div class="flex items-center justify-between mb-3">
+            <span class="text-2xl font-black tracking-tighter text-black">Uber Engine</span>
+            <span class="bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-0.5 rounded-md">Live Ready</span>
+        </div>
+        
+        <p id="instruction-txt" class="text-xs text-gray-500 font-medium mb-4">Click anywhere on the map grid to set your drop-off terminal location.</p>
+
+        <!-- Dynamic Action Workflow Button -->
+        <button id="main-workflow-btn" onclick="openBookingForm()" class="w-full py-3.5 bg-black text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-gray-900 transition-all cursor-pointer shadow-md">
+            🚖 Book a Ride
+        </button>
+    </div>
+
+    <!-- SIDE/SLIDE OVERLAY MODAL FORM POPUP (Opens upon Booking request) -->
+    <div id="form-overlay" class="absolute top-4 left-4 z-[1010] w-full max-w-sm bg-white rounded-2xl shadow-2xl p-5 border border-gray-100 hidden transition-all duration-300">
+        <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100">
+            <h3 class="text-sm font-black uppercase tracking-wider text-black">Confirm Passenger Details</h3>
+            <button onclick="closeBookingForm()" class="text-gray-400 hover:text-black font-bold text-sm cursor-pointer">✕</button>
+        </div>
+
+        <form id="rider-booking-form" onsubmit="processFormDispatch(event)" class="space-y-3.5">
+            <div>
+                <label class="text-[10px] font-bold uppercase text-gray-400 block mb-1">Passenger Name</label>
+                <input type="text" id="inp-name" required placeholder="e.g. John Doe" class="w-full border border-gray-200 text-xs rounded-xl p-3 focus:outline-none focus:border-black bg-gray-50">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold uppercase text-gray-400 block mb-1">Contact Number</label>
+                <input type="tel" id="inp-phone" required placeholder="017XXXXXXXX" class="w-full border border-gray-200 text-xs rounded-xl p-3 focus:outline-none focus:border-black bg-gray-50">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold uppercase text-gray-400 block mb-1">Ride Tier Choice</label>
+                <select id="inp-tier" class="w-full border border-gray-200 text-xs rounded-xl p-3 focus:outline-none focus:border-black bg-gray-50 font-semibold">
+                    <option value="UberX">🚗 UberX (Premium Car)</option>
+                    <option value="Moto">🏍️ Uber Moto (Fast Bike)</option>
+                </select>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-md cursor-pointer">
+                Find Nearest Driver
+            </button>
+        </form>
+    </div>
+
+    <!-- LIVE ANALYTICS HUD RUNTIME BAR (Appears only after route renders) -->
+    <div id="analytics-hud" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1000] w-11/12 max-w-md bg-black text-white rounded-2xl shadow-2xl p-4 flex items-center justify-between border border-gray-800 hidden animate-bounce-short">
+        <div class="flex flex-col">
+            <span class="text-[9px] font-bold tracking-widest text-gray-400 uppercase">Estimated Distance</span>
+            <span id="hud-dist" class="text-base font-black text-emerald-400">0.00 km</span>
+        </div>
+        <div class="h-8 w-[1px] bg-gray-800"></div>
+        <div class="flex flex-col">
+            <span class="text-[9px] font-bold tracking-widest text-gray-400 uppercase">Estimated Duration</span>
+            <span id="hud-time" class="text-base font-black text-blue-400">0 mins</span>
+        </div>
+        <div class="h-8 w-[1px] bg-gray-800"></div>
+        <div class="flex flex-col items-end">
+            <span class="text-[9px] font-bold tracking-widest text-gray-400 uppercase">Estimated Fare</span>
+            <span id="hud-fare" class="text-base font-black text-yellow-400">৳0.00</span>
+        </div>
+    </div>
+
+    <!-- GEOLOCATION FLOAT ACTION BUTTON -->
+    <button onclick="locateUserCoordinates()" title="Recenter Location" class="absolute bottom-6 right-6 z-[1000] h-12 w-12 bg-white rounded-full shadow-2xl flex items-center justify-center border border-gray-100 hover:bg-gray-50 transition-all cursor-pointer active:scale-95 group">
+        <svg class="h-5 w-5 text-black group-hover:rotate-45 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+    </button>
+
+    <!-- CORE MAP INJECTION GRID CONTROLLER -->
+    <div id="map"></div>
+
+    <!-- Leaflet Engine Source Scripts Core Stack -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+    <script>
+        let map;
+        let pickupLatLng = null;
+        let dropoffLatLng = null;
+        let pickupMarker = null;
+        let dropoffMarker = null;
+        let routingControlEngine = null;
+
+        // Initialize Map view layout bounded parameters
+        const boundaryGeofence = L.latLngBounds(L.latLng(20.59, 88.01), L.latLng(26.63, 92.68));
+        
+        map = L.map('map', {
+            zoomControl: false,
+            maxBounds: boundaryGeofence,
+            maxBoundsViscosity: 1.0
+        }).setView([23.8103, 90.4125], 13); // Dhaka grid default fallback
+
+        // Render open layer tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Auto run user tracking sequence on script start
+        locateUserCoordinates();
+
+        // 1. Precise Browser Geolocation Target Pull Engine
+        function locateUserCoordinates() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    pickupLatLng = L.latLng(lat, lng);
+                    
+                    map.setView(pickupLatLng, 15);
+                    
+                    // Render or reposition Pickup marker node
+                    if (pickupMarker) {
+                        pickupMarker.setLatLng(pickupLatLng);
+                    } else {
+                        pickupMarker = L.marker(pickupLatLng, { draggable: true })
+                            .addTo(map)
+                            .bindPopup("<b class='text-xs'>Your Location (Pickup)</b>")
+                            .openPopup();
+                        
+                        // Recalculate route properties if marker drag event completes
+                        pickupMarker.on('dragend', function() {
+                            pickupLatLng = pickupMarker.getLatLng();
+                            triggerRoutingGeneration();
+                        });
+                    }
+                    triggerRoutingGeneration();
+                }, error => {
+                    alert("GPS execution access rejected. Please drop markers manually inside bounds.");
+                });
+            }
+        }
+
+        // 2. Click Mapping Interaction Engine to capture Dropoff endpoints
+        map.on('click', function(e) {
+            dropoffLatLng = e.latlng;
+            
+            if (dropoffMarker) {
+                dropoffMarker.setLatLng(dropoffLatLng);
+            } else {
+                dropoffMarker = L.marker(dropoffLatLng, { draggable: true })
+                    .addTo(map)
+                    .bindPopup("<b class='text-xs'>Dropoff Destination</b>")
+                    .openPopup();
+
+                dropoffMarker.on('dragend', function() {
+                    dropoffLatLng = dropoffMarker.getLatLng();
+                    triggerRoutingGeneration();
+                });
+            }
+            document.getElementById('instruction-txt').innerText = "Destination pinned! Tap below to open validation parameters form.";
+            triggerRoutingGeneration();
+        });
+
+        // 3. Leaflet Routing Engine Call Pipeline
+        function triggerRoutingGeneration() {
+            if (!pickupLatLng || !dropoffLatLng) return;
+
+            // Purge previous vector polyline trace tracks safely
+            if (routingControlEngine) {
+                map.removeControl(routingControlEngine);
+            }
+
+            routingControlEngine = L.Routing.control({
+                waypoints: [pickupLatLng, dropoffLatLng],
+                createMarker: function() { return null; }, // Suppress duplication markers layout layer
+                routeWhileDragging: false,
+                lineOptions: {
+                    styles: [{ color: '#10b981', opacity: 0.85, weight: 6 }] // High fidelity emerald path trace line
+                }
+            }).addTo(map);
+
+            // Hook calculations event update cycle matrix
+            routingControlEngine.on('routesfound', function(e) {
+                const routes = e.routes;
+                const activePathMetrics = routes[0].summary;
+                
+                const calculatedDistKm = activePathMetrics.totalDistance / 1000;
+                const calculatedTimeMins = Math.round(activePathMetrics.totalTime / 60);
+                
+                // Expose operational metrics to dashboard display units
+                updateHUDAnalyticsPanel(calculatedDistKm, calculatedTimeMins);
+            });
+        }
+
+        // 4. Compute Dynamic Fares 
+        function updateHUDAnalyticsPanel(distance, time) {
+            document.getElementById('hud-dist').innerText = `${distance.toFixed(2)} km`;
+            document.getElementById('hud-time').innerText = `${time} mins`;
+            
+            const targetedTier = document.getElementById('inp-tier').value;
+            let finalFareBDT = 0;
+
+            if (targetedTier === 'UberX') {
+                finalFareBDT = 60 + (distance * 18) + (time * 2);
+            } else {
+                finalFareBDT = 30 + (distance * 9) + (time * 1);
+            }
+
+            document.getElementById('hud-fare').innerText = `৳${Math.round(finalFareBDT)}`;
+        }
+
+        // 5. Interface Workflow Modal Controls
+        function openBookingForm() {
+            if (!dropoffLatLng) {
+                alert("Please click anywhere on the map map interface grid first to set your Destination point.");
+                return;
+            }
+            document.getElementById('top-card').classList.add('hidden');
+            document.getElementById('form-overlay').classList.remove('hidden');
+        }
+
+        function closeBookingForm() {
+            document.getElementById('form-overlay').classList.add('hidden');
+            document.getElementById('top-card').classList.remove('hidden');
+        }
+
+        // 6. Final Order Form Dispatch Event Processing
+        function processFormDispatch(event) {
+            event.preventDefault();
+
+            const pName = document.getElementById('inp-name').value;
+            const pPhone = document.getElementById('inp-phone').value;
+            const pTier = document.getElementById('inp-tier').value;
+
+            // Retrigger routing math calculation profiles update to match tier select inputs updates
+            triggerRoutingGeneration();
+
+            // Hide booking workflow window, reveal final visual layout dashboards metrics HUD
+            document.getElementById('form-overlay').classList.add('hidden');
+            document.getElementById('analytics-hud').classList.remove('hidden');
+            
+            alert(`🎉 Booking Requested Successfully!\n\nPassenger: ${pName}\nContact: ${pPhone}\nVehicle Type: ${pTier}\n\nCalculating exact route path vector details visually now.`);
+        }
+    </script>
+</body>
+</html>
