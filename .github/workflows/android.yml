@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
-          cache-dependency-path: ryvo-rider/frontend/package-lock.json # Points cache to frontend
+          cache-dependency-path: frontend/package-lock.json # Correct path inside ryvo-rider
 
       - uses: actions/setup-java@v4
         with:
@@ -27,19 +27,19 @@ jobs:
       - uses: android-actions/setup-android@v3
 
       - name: Install dependencies
-        working-directory: ryvo-rider/frontend
+        working-directory: frontend
         run: npm ci
 
       - name: Build web app
-        working-directory: ryvo-rider/frontend
+        working-directory: frontend
         run: npm run build
 
       - name: Sync Capacitor
-        working-directory: ryvo-rider/frontend
+        working-directory: frontend
         run: npx cap sync android
 
       - name: Build APK
-        working-directory: ryvo-rider/frontend/android
+        working-directory: frontend/android
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug --stacktrace
@@ -48,4 +48,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ryvo-rider-apk
-          path: ryvo-rider/frontend/android/app/build/outputs/apk/debug/app-debug.apk
+          path: frontend/android/app/build/outputs/apk/debug/app-debug.apk
