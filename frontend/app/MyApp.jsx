@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { ForegroundService } from "@capawesome-team/capacitor-android-foreground-service";
+import GeoLocation from "./service/GeoLocation"
 
 function MyApp() {
 	useEffect(() => {
@@ -44,8 +45,8 @@ function MyApp() {
 
 	return (
 		<div style={{ textAlign: "center", marginTop: "20%" }}>
-			<h1>Doctor Seba Frontend</h1>
-			<p>Android app with an active background service channel.</p>
+			<h1>Testing App</h1>
+<GeoLocation/>
 		</div>
 	);
 }

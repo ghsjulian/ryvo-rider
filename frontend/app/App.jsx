@@ -4,8 +4,8 @@ import Signup from "./pages/Signup"
 
 const App = () => {
   return (<>
-      <Signup/>
-    {/*<MapContainer/>*/}
+     {/* <Signup/>*/}
+    <MapContainer/>
     </>
   )
 }
