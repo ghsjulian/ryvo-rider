@@ -1,9 +1,12 @@
 import React from 'react'
 import MapContainer from "./layouts/MapContainer"
+import Signup from "./pages/Signup"
 
 const App = () => {
-  return (
-    <MapContainer/>
+  return (<>
+      <Signup/>
+    {/*<MapContainer/>*/}
+    </>
   )
 }
 
