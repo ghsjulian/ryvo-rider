@@ -34,7 +34,7 @@ function MyApp() {
 					smallIcon: "ic_launcher", // Default App icon
 					notificationChannelId: "ryvo_riding_service"
 				});
-				console.log("Foreground service successfully started.");
+				console.log("[+] Foreground service successfully started.");
 			} catch (err) {
 				console.error("Failed to initialize background service:", err);
 			}

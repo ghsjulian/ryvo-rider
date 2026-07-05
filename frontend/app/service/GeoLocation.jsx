@@ -27,17 +27,26 @@ export default function LocationService() {
 					console.log("Location permission denied");
 					return;
 				}
-
+				
+				const pos = await Geolocation.getCurrentPosition({
+    enableHighAccuracy: true,
+    timeout: 120000,
+  });
+  console.log("[+] Your Current Position : ",pos)
 				// Watch device location
 				watchId = await Geolocation.watchPosition(
 					{
 						enableHighAccuracy: true,
-						timeout: 50000,
-						maximumAge: 0
+						timeout: 120000, // 2 minutes
+						maximumAge: 5000,
+						minimumUpdateInterval: 2000 // Android
 					},
 					(position, err) => {
 						if (err) {
-							console.error("[!] Error While Fetch Location : ",err);
+							console.error(
+								"[!] Error While Fetch Location : ",
+								err
+							);
 							return;
 						}
 
@@ -62,7 +71,7 @@ export default function LocationService() {
 					}
 				);
 			} catch (e) {
-				console.error("[!] Something Wrong : ",e);
+				console.error("[!] Something Wrong : ", e);
 			}
 		}
 
