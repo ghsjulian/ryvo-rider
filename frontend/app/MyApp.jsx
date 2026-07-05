@@ -50,4 +50,4 @@ function MyApp() {
 	);
 }
 
-export default App;
+export default MyApp;
