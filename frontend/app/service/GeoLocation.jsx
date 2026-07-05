@@ -4,38 +4,59 @@ import useMapState from "../store/useMapState"
 
 
 export default function LocationService() {
-  const {setLocation} = useMapState()
-  useEffect(() => {
-    let stopped = false;
+const {setLocation} = useMapState()
+	useEffect(() => {
+		let running = true;
 
-    async function updateLocation() {
-      try {
-        const pos = await Geolocation.getCurrentPosition({
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
-        });
+		const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        if (stopped) return;
+		async function startTracking() {
+			while (running) {
+				try {
+					const position = await Geolocation.getCurrentPosition({
+						enableHighAccuracy: true,
+						timeout: 10000,
+						maximumAge: 0
+					});
+					
+					const location = {
+						latitude: position.coords.latitude,
+						longitude: position.coords.longitude,
+						accuracy: position.coords.accuracy,
+						speed: position.coords.speed ?? 0,
+						heading: position.coords.heading ?? 0,
+						altitude: position.coords.altitude,
+						timestamp: position.timestamp
+					};
+				setLocation(position)
+					console.log("[+] Current Location:", location);
 
-        setLocation(pos)
-        // Update Zustand
-        // Send through Socket.IO
-        // Update marker
-      } catch (err) {
-        console.error("[!] ERROR WHILE FETCH LOCATION : ",err);
-      }
-    }
+					// ==========================
+					// Update Zustand
+					// useLocationStore.getState().setLocation(location);
 
-    updateLocation();
+					// Send to Socket.IO
+					// socket.emit("driver:location", location);
 
-    const timer = setInterval(updateLocation, 2000);
+					// Or send to API
+					// await axios.post("/api/location", location);
+					// ==========================
 
-    return () => {
-      stopped = true;
-      clearInterval(timer);
-    };
-  }, []);
+				} catch (err) {
+					console.error("[!] Location Error:", err);
+				}
 
-  return null;
+				// Wait 2 seconds before requesting again
+				await sleep(2000);
+			}
+		}
+
+		startTracking();
+
+		return () => {
+			running = false;
+		};
+	}, []);
+
+	return null;
 }
