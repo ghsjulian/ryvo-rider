@@ -43,7 +43,7 @@ jobs:
 
       - name: Install Capacitor Assets
         working-directory: frontend
-        run: npm install -D @capacitor/ass
+        run: npm install -D @capacitor/assets
 
       - name: Generate Capacitor Assets
         run: npx capacitor-assets generate
