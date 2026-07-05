@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { ForegroundService } from "@capawesome-team/capacitor-android-foreground-service";
-import GeoLocation from "./service/GeoLocation"
+import GeoLocation from "./service/GeoLocation";
+import useMapState from "./store/useMapState";
 
 function MyApp() {
+    const {currentLocation} = useMapState()
 	useEffect(() => {
 		const startService = async () => {
 			// Only execute on native Android devices
-			console.log("[+] Your Platform : ",Capacitor.getPlatform())
+			console.log("[+] Your Platform : ", Capacitor.getPlatform());
 			if (Capacitor.getPlatform() !== "android") return;
 
 			try {
@@ -46,7 +48,12 @@ function MyApp() {
 	return (
 		<div style={{ textAlign: "center", marginTop: "20%" }}>
 			<h1>Testing App</h1>
-<GeoLocation/>
+			<GeoLocation />
+			{
+			    currentLocation == null || !currentLocation ? 
+			    <h3>Fetching Your Location</h3> :
+			    <p>{JSON.stringify(currentLocation)}</p>
+			}
 		</div>
 	);
 }

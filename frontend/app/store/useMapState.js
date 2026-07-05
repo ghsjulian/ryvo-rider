@@ -76,7 +76,14 @@ const useMapState = create((set, get) => ({
 	// Selected Vehicle
 	// -----------------------
 	setSelectedVehicle: vehicle => set({ selectedVehicle: vehicle }),
-
+	
+	
+	// Set Location From App 
+	setLocation : (location)=>{
+	    set({
+					currentLocation: location 
+	    })
+	},
 	// -----------------------
 	// Get Current Location (Button Click)
 	// -----------------------

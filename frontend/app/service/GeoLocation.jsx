@@ -1,88 +1,41 @@
-// src/components/location/LocationService.jsx
-
 import { useEffect } from "react";
 import { Geolocation } from "@capacitor/geolocation";
+import useMapState from "../store/useMapState"
+
 
 export default function LocationService() {
-	useEffect(() => {
-		let watchId = null;
+  const {setLocation} = useMapState()
+  useEffect(() => {
+    let stopped = false;
 
-		async function startLocation() {
-			try {
-				// Check current permission
-				let permission = await Geolocation.checkPermissions();
+    async function updateLocation() {
+      try {
+        const pos = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        });
 
-				// Request if not granted
-				if (
-					permission.location !== "granted" &&
-					permission.coarseLocation !== "granted"
-				) {
-					permission = await Geolocation.requestPermissions();
-				}
+        if (stopped) return;
 
-				if (
-					permission.location !== "granted" &&
-					permission.coarseLocation !== "granted"
-				) {
-					console.log("Location permission denied");
-					return;
-				}
-				
-				const pos = await Geolocation.getCurrentPosition({
-    enableHighAccuracy: true,
-    timeout: 120000,
-  });
-  console.log("[+] Your Current Position : ",pos)
-				// Watch device location
-				watchId = await Geolocation.watchPosition(
-					{
-						enableHighAccuracy: true,
-						timeout: 120000, // 2 minutes
-						maximumAge: 5000,
-						minimumUpdateInterval: 2000 // Android
-					},
-					(position, err) => {
-						if (err) {
-							console.error(
-								"[!] Error While Fetch Location : ",
-								err
-							);
-							return;
-						}
+        setLocation(pos)
+        // Update Zustand
+        // Send through Socket.IO
+        // Update marker
+      } catch (err) {
+        console.error("[!] ERROR WHILE FETCH LOCATION : ",err);
+      }
+    }
 
-						if (!position) return;
+    updateLocation();
 
-						const location = {
-							latitude: position.coords.latitude,
-							longitude: position.coords.longitude,
-							accuracy: position.coords.accuracy,
-							speed: position.coords.speed,
-							heading: position.coords.heading,
-							altitude: position.coords.altitude,
-							timestamp: position.timestamp
-						};
+    const timer = setInterval(updateLocation, 2000);
 
-						console.log("[+] Your Current Location : ", location);
+    return () => {
+      stopped = true;
+      clearInterval(timer);
+    };
+  }, []);
 
-						// TODO:
-						// socket.emit(...)
-						// axios.post(...)
-						// Zustand store update
-					}
-				);
-			} catch (e) {
-				console.error("[!] Something Wrong : ", e);
-			}
-		}
-
-		startLocation();
-
-		return () => {
-			if (watchId) {
-				Geolocation.clearWatch({ id: watchId });
-			}
-		};
-	}, []);
-
-	return null;
+  return null;
 }
