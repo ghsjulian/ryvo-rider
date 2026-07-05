@@ -7,6 +7,7 @@ function MyApp() {
 	useEffect(() => {
 		const startService = async () => {
 			// Only execute on native Android devices
+			console.log("[+] Your Platform : ",Capacitor.getPlatform())
 			if (Capacitor.getPlatform() !== "android") return;
 
 			try {
@@ -18,22 +19,21 @@ function MyApp() {
 
 				// Create the Termux-like Notification Channel
 				await ForegroundService.createNotificationChannel({
-					id: "doctor_seba_service",
-					name: "Background Runner",
+					id: "ryvo_riding_service",
+					name: "Ryvo Rider Service",
 					description:
-						"Keeps Doctor Seba working continuously in the background.",
+						"Keeps working continuously in the background.",
 					importance: 3 // Default/High priority visibility
 				});
 
 				// Start the continuous foreground service
 				await ForegroundService.startForegroundService({
 					id: 101,
-					title: "Doctor Seba is Running",
+					title: "Ryvo Rider Running",
 					body: "The background engine is active.",
 					smallIcon: "ic_launcher", // Default App icon
-					notificationChannelId: "doctor_seba_service"
+					notificationChannelId: "ryvo_riding_service"
 				});
-
 				console.log("Foreground service successfully started.");
 			} catch (err) {
 				console.error("Failed to initialize background service:", err);

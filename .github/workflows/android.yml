@@ -41,6 +41,14 @@ jobs:
       - name: Build Vite
         run: npm run build
 
+      - name: Install Capacitor Assets
+        working-directory: frontend
+        run: npm install -D @capacitor/ass
+
+      - name: Generate Capacitor Assets
+        run: npx capacitor-assets generate
+        working-directory: frontend
+
       - name: Sync Capacitor
         run: npx cap sync android
 

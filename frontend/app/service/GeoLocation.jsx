@@ -4,76 +4,76 @@ import { useEffect } from "react";
 import { Geolocation } from "@capacitor/geolocation";
 
 export default function LocationService() {
-  useEffect(() => {
-    let watchId = null;
+	useEffect(() => {
+		let watchId = null;
 
-    async function startLocation() {
-      try {
-        // Check current permission
-        let permission = await Geolocation.checkPermissions();
+		async function startLocation() {
+			try {
+				// Check current permission
+				let permission = await Geolocation.checkPermissions();
 
-        // Request if not granted
-        if (
-          permission.location !== "granted" &&
-          permission.coarseLocation !== "granted"
-        ) {
-          permission = await Geolocation.requestPermissions();
-        }
+				// Request if not granted
+				if (
+					permission.location !== "granted" &&
+					permission.coarseLocation !== "granted"
+				) {
+					permission = await Geolocation.requestPermissions();
+				}
 
-        if (
-          permission.location !== "granted" &&
-          permission.coarseLocation !== "granted"
-        ) {
-          console.log("Location permission denied");
-          return;
-        }
+				if (
+					permission.location !== "granted" &&
+					permission.coarseLocation !== "granted"
+				) {
+					console.log("Location permission denied");
+					return;
+				}
 
-        // Watch device location
-        watchId = await Geolocation.watchPosition(
-          {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0,
-          },
-          (position, err) => {
-            if (err) {
-              console.error(err);
-              return;
-            }
+				// Watch device location
+				watchId = await Geolocation.watchPosition(
+					{
+						enableHighAccuracy: true,
+						timeout: 50000,
+						maximumAge: 0
+					},
+					(position, err) => {
+						if (err) {
+							console.error("[!] Error While Fetch Location : ",err);
+							return;
+						}
 
-            if (!position) return;
+						if (!position) return;
 
-            const location = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              accuracy: position.coords.accuracy,
-              speed: position.coords.speed,
-              heading: position.coords.heading,
-              altitude: position.coords.altitude,
-              timestamp: position.timestamp,
-            };
+						const location = {
+							latitude: position.coords.latitude,
+							longitude: position.coords.longitude,
+							accuracy: position.coords.accuracy,
+							speed: position.coords.speed,
+							heading: position.coords.heading,
+							altitude: position.coords.altitude,
+							timestamp: position.timestamp
+						};
 
-            console.log("Current Location:", location);
+						console.log("[+] Your Current Location : ", location);
 
-            // TODO:
-            // socket.emit(...)
-            // axios.post(...)
-            // Zustand store update
-          }
-        );
-      } catch (e) {
-        console.error(e);
-      }
-    }
+						// TODO:
+						// socket.emit(...)
+						// axios.post(...)
+						// Zustand store update
+					}
+				);
+			} catch (e) {
+				console.error("[!] Something Wrong : ",e);
+			}
+		}
 
-    startLocation();
+		startLocation();
 
-    return () => {
-      if (watchId) {
-        Geolocation.clearWatch({ id: watchId });
-      }
-    };
-  }, []);
+		return () => {
+			if (watchId) {
+				Geolocation.clearWatch({ id: watchId });
+			}
+		};
+	}, []);
 
-  return null;
+	return null;
 }
