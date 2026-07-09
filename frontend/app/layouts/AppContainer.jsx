@@ -1,24 +1,24 @@
 import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 import { ForegroundService } from "@capawesome-team/capacitor-android-foreground-service";
-import GeoLocation from "./service/GeoLocation";
-import useMapState from "./store/useMapState";
+import GeoLocation from "../service/GeoLocation";
+import useMapState from "../store/useMapState";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import FooterButton from "./FooterButton";
+import MainMap from "./Map";
 
-function MyApp() {
-    const {currentLocation} = useMapState()
+const AppContainer = () => {
+	const { currentLocation } = useMapState();
 	useEffect(() => {
 		const startService = async () => {
-			// Only execute on native Android devices
 			console.log("[+] Your Platform : ", Capacitor.getPlatform());
 			if (Capacitor.getPlatform() !== "android") return;
-
 			try {
-				// Request Notification permission (Required on Android 13+)
 				const perm = await ForegroundService.checkPermissions();
 				if (perm.display !== "granted") {
 					await ForegroundService.requestPermissions();
 				}
-
 				// Create the Termux-like Notification Channel
 				await ForegroundService.createNotificationChannel({
 					id: "ryvo_riding_service",
@@ -27,7 +27,6 @@ function MyApp() {
 						"Keeps working continuously in the background.",
 					importance: 3 // Default/High priority visibility
 				});
-
 				// Start the continuous foreground service
 				await ForegroundService.startForegroundService({
 					id: 101,
@@ -41,21 +40,17 @@ function MyApp() {
 				console.error("Failed to initialize background service:", err);
 			}
 		};
-
 		startService();
 	}, []);
-
 	return (
-		<div style={{ textAlign: "center", marginTop: "20%" }}>
-			<h1>Testing App</h1>
-			<GeoLocation />
-			{
-			    currentLocation == null || !currentLocation ? 
-			    <h3>Fetching Your Location</h3> :
-			    <p>{JSON.stringify(currentLocation)}</p>
-			}
-		</div>
+		<>
+			<Sidebar />
+			<Header />
+			{/*	<GeoLocation /> */}
+			<MainMap />
+			<FooterButton />
+		</>
 	);
-}
+};
 
-export default MyApp;
+export default AppContainer;

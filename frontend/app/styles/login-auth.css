@@ -1,5 +1,6 @@
 :root {
 	--blue: #0067a8;
+	--text: #2a3133;
 }
 
 .page {
@@ -22,7 +23,9 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	box-shadow: 0 5px 13px rgba(0,0,0,.35);
+	padding: 1.5rem;
+	border-radius: 12px;
+	box-shadow: 0 5px 13px rgba(0, 0, 0, 0.35);
 }
 
 .header {
@@ -33,14 +36,17 @@
 	font-size: 2.2rem;
 	font-weight: 900;
 	letter-spacing: -1.5px;
-	text-transform: lowercase;
+	text-transform: uppercase;
 	margin-bottom: 8px;
+	text-align: center;
+	color: var(--blue);
 }
 
 .subtitle {
 	font-size: 1.1rem;
-	color: #545454;
+	color: var(--text);
 	font-weight: 400;
+	text-align: center;
 }
 
 /* --- Form Elements --- */
@@ -56,7 +62,8 @@
 	background-color: #f6f6f6;
 	border: 2px solid transparent;
 	border-radius: 8px;
-	color: #000000;
+	color: var(--blue);
+	font-weight: 700;
 	outline: none;
 	transition: all 0.2s ease-in-out;
 }
@@ -67,7 +74,8 @@
 	left: 16px;
 	top: 50%;
 	transform: translateY(-50%);
-	color: #545454;
+	color: var(--text);
+	background: #fff;
 	pointer-events: none;
 	transition: all 0.2s ease-in-out;
 	font-size: 1rem;
@@ -77,60 +85,109 @@
 .form-input:focus,
 .form-input:not(:placeholder-shown) {
 	background-color: #ffffff;
-	border-color: #000000;
-	padding-top: 22px;
+	border-color: var(--blue);
+	/* padding-top: 22px; 
 	padding-bottom: 10px;
+	*/
 }
 
 .form-input:focus + .form-label,
 .form-input:not(:placeholder-shown) + .form-label {
-	top: 12px;
-	font-size: 0.75rem;
+	top: 0;
+	font-size: 0.85rem;
 	font-weight: 700;
-	color: #000000;
+	color: var(--text);
+	background: #e4e8e9;
+	padding: 0.3rem;
 }
-
-/* --- Validation States --- */
-.form-input.invalid {
-	border-color: #000000;
-	background-color: #fff8f8; /* Subtle tint to maintain 2-color elegance */
+.option {
+	margin-bottom: 25px;
 }
-
-.error-message {
-	font-size: 0.8rem;
-	font-weight: 500;
-	color: #000000;
-	margin-top: 6px;
-	display: none;
+/* Radio Buttons */
+.radio-group {
+	display: flex;
+	gap: 30px;
 }
-
-.form-input.invalid ~ .error-message {
-	display: block;
+.radio-option {
+	display: flex;
+	align-items: center;
+}
+input[type="radio"] {
+	width: 22px;
+	height: 22px;
+	margin-right: 10px;
+	accent-color: var(--blue);
 }
 
 /* --- T&C Text --- */
 .terms {
-	font-size: 0.85rem;
+	font-size: 13px;
 	color: #545454;
 	line-height: 1.4;
 	margin-bottom: 24px;
 }
 
 .terms a {
-	color: #000000;
+	color: var(--blue);
 	text-decoration: underline;
 	font-weight: 600;
+}
+
+/* Input with Errors */
+.server-error {
+	border: 0.5px solid #f10000 !important;
+	color: #f10000;
+	background: rgba(244, 11, 11, 0.158);
+	font-weight: 800;
+	width: 100%;
+	margin-bottom: 1.5rem;
+	border-radius: 5px;
+	text-align: center;
+	padding: 0.7rem 0.7rem;
+}
+.server-success {
+	border: 0.5px solid #008923 !important;
+	color: #008923;
+	background: rgba(0, 210, 109, 0.158);
+	font-weight: 800;
+	width: 100%;
+	margin-bottom: 1.5rem;
+	border-radius: 5px;
+	text-align: center;
+	padding: 0.7rem 0.7rem;
+}
+.form-input.error {
+	border: 2px solid #f10000 !important;
+}
+
+/* Input when Validating Successfully */
+.form-input.success {
+	border: 2px solid #008923 !important;
+}
+
+/* Explicit red text styling for validation labels */
+.error-message {
+	color: #f10000;
+	font-size: 0.85rem;
+	margin-top: 4px;
+	transition: 1.3s ease-in-out all;
+}
+.success-message {
+	color: #008923;
+	font-size: 0.85rem;
+	margin-top: 4px;
+	transition: 1.3s ease-in-out all;
 }
 
 /* --- Primary Button --- */
 .btn-submit {
 	width: 100%;
-	padding: 16px;
+	padding: 0.5rem 1rem;
 	font-size: 1rem;
 	font-weight: 600;
-	background-color: #000000;
+	background-color: var(--blue);
 	color: #ffffff;
-	border: 2px solid #000000;
+	border: 2px solid var(--blue);
 	border-radius: 8px;
 	cursor: pointer;
 	transition: all 0.2s ease;
@@ -138,6 +195,8 @@
 	justify-content: center;
 	align-items: center;
 	gap: 8px;
+	font-weight: 800;
+	margin-top: 1rem;
 }
 
 .btn-submit:hidden {
@@ -153,11 +212,11 @@
 	text-align: center;
 	margin-top: 32px;
 	font-size: 0.95rem;
-	color: #545454;
+	color: var(--text);
 }
 
 .footer-link a {
-	color: #000000;
+	color: var(--blue);
 	text-decoration: none;
 	font-weight: 700;
 	margin-left: 4px;
@@ -169,6 +228,8 @@
 
 /* Minimalist Arrow Icon */
 .arrow-icon {
+	margin-bottom: 0.4rem;
+	font-size: 20px;
 	font-weight: bold;
 	transition: transform 0.2s;
 }

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProDash - Admin Panel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-dark: #0f172a;
+            --bg-card: #1e2937;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Top Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #a5b4fc);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 420px;
+            background-color: var(--bg-card);
+            border-radius: 9999px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .search-bar input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .nav-icon {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-icon:hover {
+            background-color: #334155;
+            color: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            bottom: 0;
+            width: 260px;
+            background-color: var(--bg-card);
+            border-right: 1px solid rgba(148, 163, 184, 0.1);
+            padding-top: 2rem;
+            overflow-y: auto;
+            z-index: 900;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-nav {
+            padding: 0 1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            padding: 0 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: rgba(99, 102, 241, 0.15);
+            color: white;
+        }
+
+        .nav-link.active {
+            background-color: rgba(99, 102, 241, 0.25);
+            color: var(--primary);
+        }
+
+        .nav-icon-img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            margin-top: 70px;
+            padding: 2rem;
+            min-height: calc(100vh - 70px);
+            transition: margin-left 0.3s ease;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .chart-card {
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-placeholder {
+            height: 320px;
+            background: linear-gradient(135deg, #1e2937, #334155);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            border: 2px dashed #475569;
+        }
+
+        /* Table */
+        .table-card {
+            background-color: var(--bg-card);
+            border-radius: 20px;
+            padding: 1.75rem;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .status {
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #4ade80;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            font-size: 1.75rem;
+            color: white;
+            cursor: pointer;
+        }
+
+        .mobile-sidebar {
+            position: fixed;
+            left: -280px;
+            top: 70px;
+            bottom: 0;
+            width: 260px;
+            background-color: var(--bg-card);
+            transition: left 0.3s ease;
+            z-index: 1100;
+            border-right: 1px solid rgba(148, 163, 184, 0.1);
+            padding-top: 1.5rem;
+        }
+
+        .mobile-sidebar.open {
+            left: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                left: -260px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .nav-left {
+                gap: 0.75rem;
+            }
+            
+            .search-bar {
+                display: none;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Fixed Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="mobile-menu-toggle" id="mobileToggle">☰</div>
+            
+            <div class="logo">
+                <div class="logo-icon">📊</div>
+                <span>ProDash</span>
+            </div>
+            
+            <div class="search-bar">
+                <span style="color: #64748b;">🔍</span>
+                <input type="text" placeholder="Search dashboard...">
+            </div>
+        </div>
+        
+        <div class="nav-right">
+            <!-- Notifications -->
+            <div class="nav-icon" title="Notifications">
+                🛎️
+            </div>
+            
+            <!-- Messages -->
+            <div class="nav-icon" title="Messages">
+                ✉️
+            </div>
+            
+            <!-- User Profile -->
+            <div class="user-profile">
+                <div class="user-avatar">JD</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.95rem;">John Doe</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Admin</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" id="desktopSidebar">
+        <div class="sidebar-nav">
+            <!-- Main Menu -->
+            <div class="nav-section">
+                <div class="nav-section-title">Core</div>
+                <a href="#" class="nav-link active">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455408.png" alt="Home" class="nav-icon-img">
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455485.png" alt="Analytics" class="nav-icon-img">
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455460.png" alt="Projects" class="nav-icon-img">
+                    <span>Projects</span>
+                </a>
+            </div>
+
+            <!-- Management -->
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455512.png" alt="Users" class="nav-icon-img">
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455437.png" alt="Teams" class="nav-icon-img">
+                    <span>Teams</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455422.png" alt="Products" class="nav-icon-img">
+                    <span>Products</span>
+                </a>
+            </div>
+
+            <!-- Settings -->
+            <div class="nav-section">
+                <div class="nav-section-title">Others</div>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455499.png" alt="Settings" class="nav-icon-img">
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455475.png" alt="Billing" class="nav-icon-img">
+                    <span>Billing</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455525.png" alt="Reports" class="nav-icon-img">
+                    <span>Reports</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Sidebar -->
+    <aside class="mobile-sidebar" id="mobileSidebar">
+        <div class="sidebar-nav">
+            <!-- Same nav content as desktop -->
+            <div class="nav-section">
+                <div class="nav-section-title">Core</div>
+                <a href="#" class="nav-link active">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455408.png" alt="Home" class="nav-icon-img">
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455485.png" alt="Analytics" class="nav-icon-img">
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455460.png" alt="Projects" class="nav-icon-img">
+                    <span>Projects</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455512.png" alt="Users" class="nav-icon-img">
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455437.png" alt="Teams" class="nav-icon-img">
+                    <span>Teams</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455422.png" alt="Products" class="nav-icon-img">
+                    <span>Products</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Others</div>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455499.png" alt="Settings" class="nav-icon-img">
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455475.png" alt="Billing" class="nav-icon-img">
+                    <span>Billing</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <img src="https://cdn-icons-png.flaticon.com/512/19455/19455525.png" alt="Reports" class="nav-icon-img">
+                    <span>Reports</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="page-title">Welcome back, John 👋</h1>
+                <p style="color: var(--text-muted);">Here's what's happening with your business today.</p>
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button style="padding: 10px 24px; background: var(--bg-card); border: 1px solid #475569; border-radius: 9999px; color: white; cursor: pointer;">
+                    Download Report
+                </button>
+                <button onclick="alert('New item created! (Demo)')" style="padding: 10px 24px; background: var(--primary); border: none; border-radius: 9999px; color: white; cursor: pointer; font-weight: 600;">
+                    + New Project
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #22c55e, #86efac);">
+                    💰
+                </div>
+                <div class="stat-value">$48,392</div>
+                <div class="stat-label">Total Revenue <span style="color: #4ade80; font-size: 0.9rem;">↑18.2%</span></div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #93c5fd);">
+                    👥
+                </div>
+                <div class="stat-value">3,284</div>
+                <div class="stat-label">Active Users <span style="color: #4ade80; font-size: 0.9rem;">↑12%</span></div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #fcd34d);">
+                    📦
+                </div>
+                <div class="stat-value">1,429</div>
+                <div class="stat-label">Orders <span style="color: #f87171; font-size: 0.9rem;">↓3%</span></div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #f9a8d4);">
+                    ⭐
+                </div>
+                <div class="stat-value">94.6%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
+                    <div>
+                        <h3 style="font-size: 1.25rem;">Revenue Trend</h3>
+                    </div>
+                    <select style="background: #334155; color: white; border: none; padding: 8px 16px; border-radius: 9999px;">
+                        <option>Last 30 days</option>
+                    </select>
+                </div>
+                <div class="chart-placeholder">
+                    📈 Interactive Revenue Chart (Replace with Chart.js or similar)
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <h3 style="margin-bottom: 1.5rem;">Traffic Sources</h3>
+                <div class="chart-placeholder" style="height: 280px;">
+                    🥧 Pie Chart / Donut (Demo)
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="table-card">
+            <div style="display: flex; justify-content: space-between;

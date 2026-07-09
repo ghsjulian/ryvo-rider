@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True/False Input Examples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .option {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 18px;
+            color: #444;
+        }
+        
+        /* Standard Checkbox */
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 15px;
+            accent-color: #667eea;
+            cursor: pointer;
+        }
+        
+        /* Toggle Switch */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 15px;
+        }
+        
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #667eea;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Radio Buttons */
+        .radio-group {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        input[type="radio"] {
+            width: 22px;
+            height: 22px;
+            margin-right: 10px;
+            accent-color: #667eea;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            min-height: 50px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            background: #5a6fd8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>True / False Input Examples</h1>
+        
+        <!-- Checkbox Example -->
+        <div class="option">
+            <label>
+                <input type="checkbox" id="checkbox1">
+                <span>Standard Checkbox (True/False)</span>
+            </label>
+        </div>
+        
+        <!-- Toggle Switch -->
+        <div class="option">
+            <label>
+                <div class="toggle">
+                    <input type="checkbox" id="toggle1">
+                    <span class="slider"></span>
+                </div>
+                <span>Toggle Switch</span>
+            </label>
+        </div>
+        
+        <!-- Radio Buttons -->
+        <div class="option">
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="truefalse" id="true" value="true" checked>
+                    <span>True</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="truefalse" id="false" value="false">
+                    <span>False</span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Multiple Checkboxes -->
+        <div class="option">
+            <p style="margin-bottom: 10px; font-weight: bold;">Multiple Options:</p>
+            <label style="margin-right: 20px;">
+                <input type="checkbox" id="opt1">
+                Option 1
+            </label>
+            <label>
+                <input type="checkbox" id="opt2">
+                Option 2
+            </label>
+        </div>
+        
+        <div class="result" id="result">
+            Click the button to see selected values
+        </div>
+        
+        <button onclick="getValues()">Get Selected Values</button>
+    </div>
+
+    <script>
+        function getValues() {
+            const result = document.getElementById('result');
+            let text = '';
+            
+            // Checkbox
+            const cb = document.getElementById('checkbox1').checked;
+            text += `Checkbox: ${cb ? 'True' : 'False'}<br>`;
+            
+            // Toggle
+            const toggle = document.getElementById('toggle1').checked;
+            text += `Toggle: ${toggle ? 'True' : 'False'}<br>`;
+            
+            // Radio
+            const selectedRadio = document.querySelector('input[name="truefalse"]:checked');
+            text += `Radio: ${selectedRadio ? selectedRadio.value.toUpperCase() : 'None'}<br>`;
+            
+            result.innerHTML = text;
+        }
+        
+        // Auto-update result when any input changes
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('change', getValues);
+        });
+    </script>
+</body>
+</html>

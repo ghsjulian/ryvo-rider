@@ -3,24 +3,19 @@ import { useNavigate, NavLink } from "react-router-dom";
 import "../styles/login-auth.css";
 import useAuth from "../store/useAuth";
 
-const Signup = () => {
-	const { serverResponse, useSignup, isLoading } = useAuth();
+const Login = () => {
+	const { serverResponse, useLogin, isLoading } = useAuth();
 	const navigate = useNavigate();
 
 	// Form field states
 	const [formData, setFormData] = useState({
-		fullname: "",
 		email: "",
-		phone: "",
-		password: "",
-		role: "RIDE"
+		password: ""
 	});
 
 	// Validation error states (empty string means valid/no error)
 	const [errors, setErrors] = useState({
-		fullname: "",
 		email: "",
-		phone: "",
 		password: ""
 	});
 
@@ -28,36 +23,15 @@ const Signup = () => {
 	const validateField = (name, value) => {
 		let errorMsg = "";
 		switch (name) {
-			case "fullname":
-				if (value.trim().length < 3) {
-					errorMsg = "✘ Please enter at least 3 characters.";
-				}
-				break;
 			case "email":
 				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 				if (!emailRegex.test(value)) {
 					errorMsg = "✘ Please enter a valid email address.";
 				}
 				break;
-			case "phone":
-				const phoneRegex = /^[0-9]{10,15}$/;
-				if (!phoneRegex.test(value)) {
-					errorMsg =
-						"✘ Please enter a valid phone number (10-15 digits).";
-				}
-				break;
 			case "password":
 				if (value.length < 6) {
 					errorMsg = "✘ Password must be at least 6 characters long.";
-				} else if (formData.password.length < 8) {
-					errorMsg = "⚠ Minimum 8 characters required";
-				} else if (
-					!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(
-						formData.password
-					)
-				) {
-					errorMsg =
-						"⚠ Use uppercase, lowercase, number & special character";
 				}
 				break;
 			default:
@@ -70,12 +44,6 @@ const Signup = () => {
 	// Live typing handler
 	const handleChange = e => {
 		const { id, name, type, value } = e.target;
-
-		// If it's a radio button, we track by name instead of id
-		if (type === "radio") {
-			setFormData(prev => ({ ...prev, role: value }));
-			return;
-		}
 
 		setFormData(prev => ({ ...prev, [id]: value }));
 		// Live Validation
@@ -98,7 +66,7 @@ const Signup = () => {
 			setErrors(finalErrors);
 			return;
 		}
-		await useSignup(formData, navigate);
+		await useLogin(formData, navigate);
 	};
 
 	// Helper to determine CSS classes for the inputs
@@ -113,7 +81,7 @@ const Signup = () => {
 				<header className="header">
 					<h1 className="logo">Ryvo Rider</h1>
 					<p className="subtitle">
-						Create your account to start riding
+						Login your account to start riding
 					</p>
 				</header>
 				<form id="signupForm" noValidate onSubmit={handleSubmit}>
@@ -122,31 +90,6 @@ const Signup = () => {
 							{serverResponse?.message}
 						</div>
 					)}
-					{/* Full Name */}
-					<div className="form-group">
-						<input
-							type="text"
-							id="fullname"
-							className={getInputClass("fullname")}
-							placeholder=" "
-							value={formData.fullname}
-							onChange={handleChange}
-						/>
-						<label htmlFor="fullname" className="form-label">
-							Full Name
-						</label>
-						{errors.fullname && (
-							<div className="error-message">
-								{errors.fullname}
-							</div>
-						)}
-						{!errors.fullname && formData.fullname && (
-							<div className="success-message">
-								✔ Fullname is ok
-							</div>
-						)}
-					</div>
-
 					{/* Email */}
 					<div className="form-group">
 						<input
@@ -169,30 +112,6 @@ const Signup = () => {
 							</div>
 						)}
 					</div>
-
-					{/* Phone Number */}
-					<div className="form-group">
-						<input
-							type="tel"
-							id="phone"
-							className={getInputClass("phone")}
-							placeholder=" "
-							value={formData.phone}
-							onChange={handleChange}
-						/>
-						<label htmlFor="phone" className="form-label">
-							Phone Number
-						</label>
-						{errors.phone && (
-							<div className="error-message">{errors.phone}</div>
-						)}
-						{!errors.phone && formData.phone && (
-							<div className="success-message">
-								✔ Phone number is ok
-							</div>
-						)}
-					</div>
-
 					{/* Password */}
 					<div className="form-group">
 						<input
@@ -217,41 +136,6 @@ const Signup = () => {
 							</div>
 						)}
 					</div>
-
-					{/* Radio Options */}
-					<div className="option">
-						<div className="radio-group">
-							<label className="radio-option">
-								<input
-									type="radio"
-									name="role"
-									value="RIDE"
-									checked={formData.role === "RIDE"}
-									onChange={handleChange}
-								/>
-								<span>For Ride</span>
-							</label>
-							<label className="radio-option">
-								<input
-									type="radio"
-									name="role"
-									value="RIDER"
-									checked={formData.role === "RIDER"}
-									onChange={handleChange}
-								/>
-								<span>For Rider</span>
-							</label>
-						</div>
-					</div>
-
-					<p className="terms">
-						By proceeding, you agree to Ryvo Rider's{" "}
-						<NavLink to="/terms-condition">
-							Terms of Service
-						</NavLink>{" "}
-						and acknowledge you have read the{" "}
-						<NavLink to="/privacy-policy">Privacy Policy</NavLink>.
-					</p>
 					<button
 						type="submit"
 						className="btn-submit"
@@ -262,17 +146,20 @@ const Signup = () => {
 								<div className="spinner"></div> Processing...
 							</>
 						) : (
-						<>Create Account	<span className="arrow-icon">→</span></>
+							<>
+								{" "}
+								Login Now <span className="arrow-icon">→</span>
+							</>
 						)}
 					</button>
 				</form>
 				<div className="footer-link">
-					Already have an account?{" "}
-					<NavLink to="/login">Log in</NavLink>
+					Don't have an account?{" "}
+					<NavLink to="/signup">Sing Up</NavLink>
 				</div>
 			</div>
 		</section>
 	);
 };
 
-export default Signup;
+export default Login;

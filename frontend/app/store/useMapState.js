@@ -22,6 +22,11 @@ const useMapState = create((set, get) => ({
 	navigationMode: false,
 	loadingRoute: false,
 	selectedVehicle: null,
+	isActive : false,
+	
+	
+	// Open Menu 
+	openMenu : ()=> set({isActive : !get().isActive}),
 
 	setMap: map => set({ map }),
 

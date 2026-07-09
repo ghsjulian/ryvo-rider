@@ -1,25 +1,19 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { NavLink } from "react-router-dom";
+import { IoMdMenu } from "react-icons/io";
+import useMapState from "../store/useMapState"
+
 
 const Header = () => {
-	return (
-		<div
-			style={{
-				position: "absolute",
-				top: 0,
-				left: 0,
-				right: 0,
-				height: "55px",
-				zIndex: 1000,
-				background: "#ffffff",
-				display: "flex",
-				alignItems: "center",
-				padding: "0 10px",
-				boxShadow: "0 2px 10px rgba(0,0,0,.15)"
-			}}
-		>
-			<h3>Taxi Zone</h3>
-		</div>
-	);
+    const {openMenu} = useMapState()
+	return <header>
+	<div className="logo">
+	<h3>Ryvo Rider</h3>
+	</div>
+	<button
+	onClick={openMenu}
+	><IoMdMenu size={25} /></button>
+	</header>;
 };
 
 export default Header;
