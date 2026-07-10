@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoRide - Modern Ride Share</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --accent: #10b981;
+            --bg-main: #f8fafc;       /* Crisp, clean light background */
+            --bg-surface: #ffffff;    /* Pure white for cards/navbars */
+            --text-main: #0f172a;     /* Dark slate for readable text */
+            --text-muted: #64748b;    /* Elegant muted gray for descriptions */
+            --border-light: #e2e8f0;  /* Subtle divider lines */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- TOP NAVBAR --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .nav-brand i {
+            color: var(--primary);
+        }
+
+        /* Desktop Navigation Links */
+        .nav-desktop-menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-desktop-menu a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-desktop-menu a:hover, .nav-desktop-menu li.active a {
+            color: var(--primary);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            border: 1px solid var(--border-light);
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-container {
+            margin-top: 70px;
+            margin-bottom: 80px; /* Space for mobile bottom nav */
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .dynamic-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            padding: 3.5rem 2.5rem;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dynamic-card .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem auto;
+            font-size: 2rem;
+        }
+
+        .dynamic-card h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .dynamic-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* --- MOBILE BOTTOM NAV MENU --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 1rem;
+            z-index: 1000;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 600;
+            gap: 5px;
+            width: 65px;
+            height: 100%;
+            transition: all 0.2s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tab-item i {
+            font-size: 1.3rem;
+        }
+
+        /* Active State styles */
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-item.active i {
+            transform: translateY(-2px);
+        }
+
+        /* --- RESPONSIVE MEDIA QUERIES --- */
+        
+        /* Desktop Layout Rules */
+        @media (min-width: 769px) {
+            .bottom-nav {
+                display: none; /* Hide bottom navigation on Desktop */
+            }
+            .main-container {
+                margin-bottom: 0; 
+            }
+        }
+
+        /* Mobile Layout Rules */
+        @media (max-width: 768px) {
+            .nav-desktop-menu {
+                display: none; /* Hide top desktop links on Mobile */
+            }
+            .navbar {
+                padding: 0 1.25rem;
+            }
+            .dynamic-card {
+                padding: 2.5rem 1.5rem;
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <a href="#" class="nav-brand">
+            <i class="fa-solid fa-bolt"></i> GoRide
+        </a>
+        
+        <!-- Desktop Nav Items -->
+        <ul class="nav-desktop-menu" id="desktopMenu">
+            <li class="active" data-tab="home"><a>Home</a></li>
+            <li data-tab="rides"><a>Rides</a></li>
+            <li data-tab="wallet"><a>Wallet</a></li>
+            <li data-tab="profile"><a>Profile</a></li>
+        </ul>
+
+        <div class="nav-profile">
+            <div class="avatar">G</div>
+        </div>
+    </nav>
+
+    <!-- Dynamic Main Screen -->
+    <main class="main-container">
+        <div class="dynamic-card" id="contentCard">
+            <!-- Initial content rendered dynamically via JS -->
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Navigation Menu -->
+    <nav class="bottom-nav" id="mobileMenu">
+        <button class="tab-item active" data-tab="home">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </button>
+        <button class="tab-item" data-tab="rides">
+            <i class="fa-solid fa-car"></i>
+            <span>Rides</span>
+        </button>
+        <button class="tab-item" data-tab="wallet">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </button>
+        <button class="tab-item" data-tab="profile">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </button>
+    </nav>
+
+    <!-- Dynamic Tab Management Logic -->
+    <script>
+        // Tab Data configurations
+        const tabContent = {
+            home: {
+                title: "Where to?",
+                desc: "Book a premium, clean ride in seconds. Request local drivers with live mapping features instantly.",
+                icon: "fa-solid fa-location-dot"
+            },
+            rides: {
+                title: "Your Rides",
+                desc: "Review your upcoming scheduled bookings, active trips, and past journey trip history statements.",
+                icon: "fa-solid fa-car-side"
+            },
+            wallet: {
+                title: "Payment & Wallet",
+                desc: "Manage your linked credit accounts, digital tokens, payment methods, and premium ride voucher passes.",
+                icon: "fa-solid fa-credit-card"
+            },
+            profile: {
+                title: "Account Profile",
+                desc: "Fine-tune user identity configurations, emergency contacts, safe zones, and user app preferences.",
+                icon: "fa-solid fa-circle-user"
+            }
+        };
+
+        // DOM elements
+        const cardContainer = document.getElementById('contentCard');
+        const mobileButtons = document.querySelectorAll('#mobileMenu .tab-item');
+        const desktopItems = document.querySelectorAll('#desktopMenu li');
+
+        // Function to systematically update screen content
+        function renderActiveTab(tabKey) {
+            const data = tabContent[tabKey];
+            
+            // Apply fresh animation on click
+            cardContainer.style.animation = 'none';
+            cardContainer.offsetHeight; // Trigger DOM reflow
+            cardContainer.style.animation = 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+
+            cardContainer.innerHTML = `
+                <div class="icon-wrapper">
+                    <i class="${data.icon}"></i>
+                </div>
+                <h1>${data.title}</h1>
+                <p>${data.desc}</p>
+            `;
+
+            // Sync active classes for both navigation menus
+            syncMenuState(mobileButtons, tabKey);
+            syncMenuState(desktopItems, tabKey);
+        }
+
+        // State syncing logic across target elements
+        function syncMenuState(elementsList, activeKey) {
+            elementsList.forEach(el => {
+                if(el.getAttribute('data-tab') === activeKey) {
+                    el.classList.add('active');
+                } else {
+                    el.classList.remove('active');
+                }
+            });
+        }
+
+        // Setup event listener routers
+        function initTabListeners(elementsList) {
+            elementsList.forEach(element => {
+                element.addEventListener('click', () => {
+                    const selectedTab = element.getAttribute('data-tab');
+                    renderActiveTab(selectedTab);
+                });
+            });
+        }
+
+        // Launch initialization on window load
+        initTabListeners(mobileButtons);
+        initTabListeners(desktopItems);
+        renderActiveTab('home'); // Base load
+    </script>
+</body>
+</html>

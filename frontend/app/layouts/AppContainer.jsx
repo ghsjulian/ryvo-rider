@@ -9,7 +9,8 @@ import FooterButton from "./FooterButton";
 import MainMap from "./Map";
 
 const AppContainer = () => {
-	const { currentLocation } = useMapState();
+	const { currentLocation, map, myLocation, startLocationTracking } =
+		useMapState();
 	useEffect(() => {
 		const startService = async () => {
 			console.log("[+] Your Platform : ", Capacitor.getPlatform());
@@ -42,6 +43,19 @@ const AppContainer = () => {
 		};
 		startService();
 	}, []);
+	
+	useEffect(() => {
+		myLocation();
+	}, [map]);
+	
+	useEffect(() => {
+		startLocationTracking();
+
+		return () => {
+			useMapState.getState().stopLocationTracking();
+		};
+	}, []);
+
 	return (
 		<>
 			<Sidebar />

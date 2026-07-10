@@ -2,10 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import useMapState from "../store/useMapState";
-import TrackLocation from "../service/TrackLocation" 
+import LocationService from "../service/GeoLocation";
 import MapIntialaizer from "../utils/MapIntialaizer";
 import MyCurrentLocation from "../utils/MyCurrentLocation";
-
 
 const MainMap = () => {
 	const {
@@ -49,8 +48,8 @@ const MainMap = () => {
 					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				/>
 				<MapIntialaizer />
-				<TrackLocation/>
-				<MyCurrentLocation/>
+				<LocationService />
+				<MyCurrentLocation />
 			</MapContainer>
 		</>
 	);

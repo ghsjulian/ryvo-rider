@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel-Aide - Rider Profile</title>
+    <style>
+        /* Base Reset & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Container View */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            position: relative;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        /* Top Header */
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Content Panel */
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Avatar Header */
+        .profile-header-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-info h3 {
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .profile-info p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .hipaa-badge {
+            display: inline-block;
+            background-color: #dcfce7;
+            color: #166534;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: #34495e;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #333;
+        }
+
+        /* Action Buttons */
+        .btn-save {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-save:hover {
+            background-color: #2980b9;
+        }
+
+        /* Bottom Fixed Navigation Bar */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            border-top: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #94a3b8;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #3498db;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <button class="btn-back" onclick="window.location.href='home.html'">←</button>
+            <h2>My Profile & Health Records</h2>
+            <span></span>
+        </div>
+
+        <div class="content">
+            
+            <!-- User Profile Summary -->
+            <div class="profile-header-card">
+                <div class="avatar">JD</div>
+                <div class="profile-info">
+                    <h3>John Doe</h3>
+                    <p>john.doe@example.com</p>
+                    <span class="hipaa-badge">🔒 HIPAA Protected PHI</span>
+                </div>
+            </div>
+
+            <!-- Health & Medical Conditions Card -->
+            <div class="card">
+                <div class="card-title">Medical Profile & Accommodations</div>
+                
+                <div class="form-group">
+                    <label for="healthRisk">Primary Health Concern / Disability</label>
+                    <select id="healthRisk">
+                        <option value="elderly" selected>Elderly / Senior Conscious Care</option>
+                        <option value="mobility">Mobility Impaired (Requires Ramp/Lift)</option>
+                        <option value="visual">Visual / Hearing Impairment</option>
+                        <option value="cognitive">Mentally Challenged / Cognitive Disability</option>
+                        <option value="chronic">At Health Risk (Chronic Illness)</option>
+                        <option value="other">Other Condition</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="conditionDetails">Medical Notes for Driver</label>
+                    <textarea id="conditionDetails" rows="3">Requires assistance entering vehicle. Uses a folding walker. Please maintain gentle driving speed.</textarea>
+                </div>
+            </div>
+
+            <!-- Emergency Contact Information -->
+            <div class="card">
+                <div class="card-title">Emergency Contact Person</div>
+                
+                <div class="form-group">
+                    <label for="emergencyName">Contact Full Name</label>
+                    <input type="text" id="emergencyName" value="Mary Doe (Daughter)">
+                </div>
+
+                <div class="form-group">
+                    <label for="emergencyPhone">Contact Phone Number</label>
+                    <input type="tel" id="emergencyPhone" value="(555) 234-5678">
+                </div>
+            </div>
+
+            <!-- Preferred Destinations -->
+            <div class="card">
+                <div class="card-title">Saved Frequent Destinations</div>
+                
+                <div class="form-group">
+                    <label for="favHome">Home Address</label>
+                    <input type="text" id="favHome" value="123 Maple Street, Cityville">
+                </div>
+
+                <div class="form-group">
+                    <label for="favHub">Preferred Transit Hub</label>
+                    <input type="text" id="favHub" value="Metro International Airport - Terminal 2">
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="saveProfile()">Save Updated Profile</button>
+
+        </div>
+
+        <!-- Mobile Navigation Bar -->
+        <nav class="navbar">
+            <a class="nav-item" onclick="window.location.href='home.html'">
+                <span class="nav-icon">🚗</span>
+                <span>Rides</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>History</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">🏥</span>
+                <span>Vitals</span>
+            </a>
+            <a class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        function saveProfile() {
+            const updatedData = {
+                healthRisk: document.getElementById('healthRisk').value,
+                notes: document.getElementById('conditionDetails').value,
+                emergencyContact: document.getElementById('emergencyName').value,
+                emergencyPhone: document.getElementById('emergencyPhone').value
+            };
+
+            console.log("Saving updated profile to backend:", updatedData);
+            alert("Your profile and healthcare information have been securely updated!");
+        }
+    </script>
+</body>
+</html>

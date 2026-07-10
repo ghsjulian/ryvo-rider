@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel-Aide - Dashboard</title>
+    <style>
+        /* Base & Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* App Layout Container - Centers like a mobile app view on desktop */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            position: relative;
+            padding-bottom: 70px; /* Space for fixed bottom navbar */
+        }
+
+        /* Top Header */
+        .header {
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+        }
+
+        /* Role Switcher Toolbar */
+        .view-switch-bar {
+            background-color: #ecf0f1;
+            padding: 8px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .toggle-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        /* Main Content Container */
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Generic Card Styling */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Search / Destination Box (Step 1) */
+        .destination-box {
+            background-color: #f8fafc;
+            border: 1.5px dashed #cbd5e1;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .input-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .dot-icon {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .dot-green { background-color: #2ecc71; }
+        .dot-red { background-color: #e74c3c; }
+
+        .location-input, .destination-select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        /* 3-Tier Vehicle Selection Grid (Step 3) */
+        .tier-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tier-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tier-card.selected {
+            border-color: #3498db;
+            background-color: #f0f7fc;
+        }
+
+        .tier-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .tier-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .tier-price {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .tier-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .badge-silver { background: #e2e8f0; color: #475569; }
+        .badge-gold { background: #fef08a; color: #854d0e; }
+        .badge-platinum { background: #e0e7ff; color: #3730a3; }
+        .badge-specialty { background: #dcfce7; color: #166534; }
+
+        .tier-amenities {
+            font-size: 11px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-action:hover {
+            background-color: #2980b9;
+        }
+
+        /* Emergency / Lifesaving Badge */
+        .kit-alert {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #991b1b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Bottom Fixed Navigation Bar */
+        .navbar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            background-color: #ffffff;
+            border-top: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            color: #94a3b8;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: #3498db;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        /* Driver UI Dynamic Section */
+        #driverDashboard {
+            display: none;
+        }
+
+        /* Responsive Overrides Desktop View adjustments */
+        @media (min-width: 481px) {
+            body {
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+            .app-container {
+                border-radius: 16px;
+                min-height: 85vh;
+                overflow: hidden;
+            }
+            .navbar {
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header class="header">
+            <h1>Travel-Aide</h1>
+            <div class="user-profile-badge">
+                <span class="status-dot"></span>
+                <span id="headerUserName">John D. (Rider)</span>
+            </div>
+        </header>
+
+        <div class="view-switch-bar">
+            <span>Current Role View: <strong id="roleIndicator">RIDER</strong></span>
+            <button class="toggle-btn" onclick="toggleRoleView()">Switch to Driver View</button>
+        </div>
+
+        <div class="content">
+
+            <div id="riderDashboard">
+                
+                <div class="kit-alert">
+                    <span>❤️</span>
+                    <span><strong>Lifesaving Kit Included:</strong> All rides carry AED Defibrillator, BP/Heart Rate Monitors, & Oxygen Concentrators.</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Where to?</div>
+                    <div class="destination-box">
+                        <div class="input-row">
+                            <span class="dot-icon dot-green"></span>
+                            <input type="text" class="location-input" value="Current Location (Home)" readonly>
+                        </div>
+                        <div class="input-row">
+                            <span class="dot-icon dot-red"></span>
+                            <select class="destination-select" id="dropoffDestination">
+                                <option value="">Select Specialized Destination...</option>
+                                <option value="airport">Airport Terminal</option>
+                                <option value="train">Train Station</option>
+                                <option value="bus">Bus Station</option>
+                                <option value="port">Cruise Ship Port</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Select Travel Class</div>
+                    <div class="tier-selector">
+                        
+                        <div class="tier-card selected" onclick="selectTier(this)">
+                            <div class="tier-header">
+                                <span class="tier-name">Silver</span>
+                                <span class="tier-badge badge-silver">Intermediate</span>
+                                <span class="tier-price">$24.50</span>
+                            </div>
+                            <div class="tier-amenities">
+                                Wi-Fi • Personalized Music • Portable Lifesaving Kit • Hand Sanitizer
+                            </div>
+                        </div>
+
+                        <div class="tier-card" onclick="selectTier(this)">
+                            <div class="tier-header">
+                                <span class="tier-name">Gold</span>
+                                <span class="tier-badge badge-gold">Premium</span>
+                                <span class="tier-price">$38.00</span>
+                            </div>
+                            <div class="tier-amenities">
+                                Wi-Fi • Custom Music • Lifesaving Kit • Snacks & Sparkling Water • Sanitizer
+                            </div>
+                        </div>
+
+                        <div class="tier-card" onclick="selectTier(this)">
+                            <div class="tier-header">
+                                <span class="tier-name">Platinum</span>
+                                <span class="tier-badge badge-platinum">Luxury</span>
+                                <span class="tier-price">$55.00</span>
+                            </div>
+                            <div class="tier-amenities">
+                                Luxury Vehicle • Wi-Fi • Snacks & Water • Tablet Use • Neck Pillow • Window Shades
+                            </div>
+                        </div>
+
+                        <div class="tier-card" onclick="selectTier(this)">
+                            <div class="tier-header">
+                                <span class="tier-name">Specialty Van</span>
+                                <span class="tier-badge badge-specialty">Lift & Ramp</span>
+                                <span class="tier-price">$45.00</span>
+                            </div>
+                            <div class="tier-amenities">
+                                Mobility Impaired Accommodations • Ramp/Lift Equipped • Full Medical Kit Included
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <button class="btn-action" onclick="requestRide()">Confirm & Request Healthcare Ride</button>
+            </div>
+
+
+            <div id="driverDashboard">
+                
+                <div class="card">
+                    <div class="card-title">
+                        <span>Pre-Trip Checklist</span>
+                        <span style="font-size:11px; color:#27ae60;">Verified STNA</span>
+                    </div>
+                    <p style="font-size: 12px; color: #666; margin-bottom: 10px;">
+                        Upload photo confirmation of portable lifesaving kit before accepting rides.
+                    </p>
+                    <button style="width:100%; padding: 8px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; cursor:pointer;">
+                        📷 Verify Medical Kit & Safety Check
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">
+                        <span>Incoming Ride Request</span>
+                        <span style="font-size:12px; color:#e67e22;">2.1 miles away</span>
+                    </div>
+                    
+                    <div style="background:#f8fafc; padding:12px; border-radius:8px; font-size:13px; margin-bottom:12px;">
+                        <p><strong>Passenger:</strong> Sarah M. (Elderly Care)</p>
+                        <p style="color:#e74c3c; margin-top:4px;"><strong>Health Risk Note:</strong> Requires gentle assistance; assistance with folding wheelchair.</p>
+                        <p style="margin-top:4px;"><strong>Destination:</strong> Metro Airport Terminal 2</p>
+                    </div>
+
+                    <div style="font-size:11px; color:#7f8c8d; margin-bottom:12px;">
+                        * Required upon pickup: Call Dispatch, verify name, obtain consent signature, and record basic Vitals (BP, Temp, Pulse-Ox).
+                    </div>
+
+                    <button class="btn-action" style="background-color: #2ecc71;" onclick="acceptRide()">Accept Pickup Request</button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <nav class="navbar">
+            <a class="nav-item active">
+                <span class="nav-icon">🚗</span>
+                <span>Rides</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span>History</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">🏥</span>
+                <span>Vitals</span>
+            </a>
+            <a class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <script>
+        let currentRole = 'rider';
+
+        function toggleRoleView() {
+            const riderView = document.getElementById('riderDashboard');
+            const driverView = document.getElementById('driverDashboard');
+            const roleIndicator = document.getElementById('roleIndicator');
+            const userName = document.getElementById('headerUserName');
+            const toggleBtn = document.querySelector('.toggle-btn');
+
+            if (currentRole === 'rider') {
+                currentRole = 'driver';
+                riderView.style.display = 'none';
+                driverView.style.display = 'block';
+                roleIndicator.textContent = 'DRIVER (Healthcare Pro)';
+                userName.textContent = 'Nurse Alex (STNA Driver)';
+                toggleBtn.textContent = 'Switch to Rider View';
+            } else {
+                currentRole = 'rider';
+                riderView.style.display = 'block';
+                driverView.style.display = 'none';
+                roleIndicator.textContent = 'RIDER';
+                userName.textContent = 'John D. (Rider)';
+                toggleBtn.textContent = 'Switch to Driver View';
+            }
+        }
+
+        function selectTier(element) {
+            const allTiers = document.querySelectorAll('.tier-card');
+            allTiers.forEach(tier => tier.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function requestRide() {
+            const dest = document.getElementById('dropoffDestination').value;
+            if(!dest) {
+                alert('Please select a destination from the menu!');
+                return;
+            }
+            alert('Step 1 Complete: Locating nearby qualified STNA/CNA Healthcare Drivers for pickup...');
+        }
+
+        function acceptRide() {
+            alert('Ride Accepted! Initializing Step 5 protocol: Directing turn-by-turn navigation to passenger location.');
+        }
+    </script>
+</body>
+</html>

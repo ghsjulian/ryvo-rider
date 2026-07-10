@@ -15,7 +15,14 @@ export default function LocationService() {
 						enableHighAccuracy: true,
 						timeout: 50000
 					});
-					setLocation(position);
+					const location = {
+							lat: position.coords.latitude,
+							lng: position.coords.longitude,
+							accuracy: position.coords.accuracy,
+							speed: position.coords.speed,
+							heading: position.coords.heading,
+						};
+						setLocation(location)
 					// ==========================
 					// Update Zustand
 					// useLocationStore.getState().setLocation(location);

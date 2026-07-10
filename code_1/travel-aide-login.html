@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel-Aide - Log In</title>
+    <style>
+        /* Base Styling - Consistent with Signup */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 450px; /* Slightly slimmer than signup for standard login balance */
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #34495e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        /* Account Type Switcher Tabs (Tailored for easy mobile tap targets) */
+        .role-tabs {
+            display: flex;
+            background-color: #f0f3f5;
+            padding: 4px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .role-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .role-tab.active {
+            background-color: #ffffff;
+            color: #3498db;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Action elements */
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+        }
+
+        /* Footer Links */
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .login-footer a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile Responsive UI Overrides */
+        @media (max-width: 480px) {
+            body {
+                background-color: #ffffff; /* Clean white background on mobile screens for full-app look */
+                padding: 15px;
+                align-items: flex-start; /* Better alignment if virtual keyboard pops up */
+            }
+
+            .login-container {
+                box-shadow: none; /* Strip shadow on mobile viewports for flatter card styling */
+                padding: 20px 10px;
+            }
+
+            h2 {
+                margin-top: 20px;
+                font-size: 24px;
+            }
+
+            .btn-submit {
+                padding: 16px; /* Larger active tap zone for mobile users */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Log in to your Travel-Aide account</p>
+
+        <div class="role-tabs">
+            <div class="role-tab active" id="tabRider" onclick="setRole('rider')">Rider Login</div>
+            <div class="role-tab" id="tabDriver" onclick="setRole('driver')">Driver Login</div>
+        </div>
+
+        <form id="loginForm">
+            <input type="hidden" id="userRole" value="rider">
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="name@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Enter your password">
+            </div>
+
+            <div class="forgot-password">
+                <a href="#" onclick="alert('Password reset link feature can be mapped to your backend route.')">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">Log In as Rider</button>
+
+            <div class="login-footer">
+                Don't have an account? <a href="signup.html">Sign Up here</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Tab toggle logic to match state
+        function setRole(role) {
+            const tabRider = document.getElementById('tabRider');
+            const tabDriver = document.getElementById('tabDriver');
+            const roleInput = document.getElementById('userRole');
+            const submitBtn = document.getElementById('submitBtn');
+
+            roleInput.value = role;
+
+            if (role === 'rider') {
+                tabRider.classList.add('active');
+                tabDriver.classList.remove('active');
+                submitBtn.textContent = 'Log In as Rider';
+            } else {
+                tabDriver.classList.add('active');
+                tabRider.classList.remove('active');
+                submitBtn.textContent = 'Log In as Driver';
+            }
+        }
+
+        // Form Submit interception ready for MERN integration
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const payload = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                role: document.getElementById('userRole').value
+            };
+
+            console.log("Sending login payload structure to validation routine:", payload);
+            alert(`Logging in successfully as a ${payload.role.toUpperCase()}! Check your developer console to inspect the targeted object bundle.`);
+            
+            // Here you will eventually write: 
+            // Axios.post('/api/auth/login', payload)...
+        });
+    </script>
+</body>
+</html>

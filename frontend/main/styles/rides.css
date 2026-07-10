@@ -1,0 +1,197 @@
+/* Main Content Container */
+.content {
+	width: 100%;
+	max-width: 500px;
+	padding: 5px 0.5rem;
+	flex: 1;
+}
+
+/* Generic Card Styling */
+.card {
+	background: #ffffff;
+	border: 1px solid #e1e8ed;
+	border-radius: 12px;
+	padding: 16px;
+	margin-bottom: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.card-title {
+	font-size: 15px;
+	font-weight: 700;
+	color: #2c3e50;
+	margin-bottom: 12px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+/* Search / Destination Box (Step 1) */
+.destination-box {
+	background-color: #f8fafc;
+	border: 1.5px dashed #cbd5e1;
+	border-radius: 10px;
+	padding: 12px;
+	margin-bottom: 15px;
+}
+
+.input-row {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 15px;
+}
+
+.input-row:last-child {
+	margin-bottom: 0;
+}
+
+.dot-icon {
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+}
+.dot-green {
+	background-color: #2ecc71;
+}
+.dot-red {
+	background-color: #e74c3c;
+}
+
+.location-input,
+.destination-select {
+	width: 100%;
+	padding: 8px 10px;
+	border: 1px solid #dcdfe6;
+	border-radius: 6px;
+	font-size: 13px;
+}
+
+/* 3-Tier Vehicle Selection Grid (Step 3) */
+.tier-selector {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.tier-card {
+	border: 2px solid #e2e8f0;
+	border-radius: 10px;
+	padding: 12px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.tier-card.selected {
+	border-color: #3498db;
+	background-color: #f0f7fc;
+}
+
+.tier-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 6px;
+}
+
+.tier-name {
+	font-weight: 700;
+	font-size: 14px;
+}
+
+.tier-price {
+	font-weight: 700;
+	color: #2c3e50;
+	font-size: 14px;
+}
+
+.tier-badge {
+	font-size: 10px;
+	padding: 2px 6px;
+	border-radius: 4px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.badge-silver {
+	background: #e2e8f0;
+	color: #475569;
+}
+.badge-gold {
+	background: #fef08a;
+	color: #854d0e;
+}
+.badge-platinum {
+	background: #e0e7ff;
+	color: #3730a3;
+}
+.badge-specialty {
+	background: #dcfce7;
+	color: #166534;
+}
+
+.tier-amenities {
+	font-size: 11px;
+	color: #64748b;
+	line-height: 1.4;
+	text-align: left;
+}
+
+/* Action Buttons */
+.content .flex-area {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.btn-action {
+	background-color: #3498db;
+	color: white;
+	border: none;
+	width: 40%;
+	padding: 10px 12px;
+	font-size: 15px;
+	font-weight: bold;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+.ride-later {
+	background-color: #194935;
+	color: white;
+	border: none;
+	width: 40%;
+	padding: 10px 12px;
+	font-size: 15px;
+	font-weight: bold;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+.ride-later:hover {
+	background: #279265;
+}
+.btn-action:hover {
+	background-color: #2980b9;
+}
+
+/* Emergency / Lifesaving Badge */
+.kit-alert {
+	background-color: #fef2f2;
+	border-left: 4px solid #ef4444;
+	padding: 10px;
+	border-radius: 4px;
+	font-size: 11px;
+	color: #991b1b;
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* Driver UI Dynamic Section */
+#driverDashboard {
+	display: none;
+}
